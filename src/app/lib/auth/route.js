@@ -6,3 +6,4 @@ export function requireAdmin(req) {
   }
 
   return user;
+}

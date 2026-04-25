@@ -1,4 +1,4 @@
-import { getUserFromReq } from "@/app/lib/page";
+import { getUserFromReq } from "@/app/lib/route";
 import cart from "@/app/models/cart";
 import connectDb from "../../createConnection/route";
 

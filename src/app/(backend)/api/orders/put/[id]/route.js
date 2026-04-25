@@ -1,28 +1,24 @@
-import { connectDB } from "@/lib/db";
-import Order from "@/models/Order";
-import { getUserFromReq } from "@/lib/getUser";
-import connectDb from "../../../createConnection/route";
+import connectDb from "@/app/(backend)/api/createConnection/route";
+import order from "@/app/models/order"; 
 
-export async function PUT(req, { params }) {
+
+export async function PUT(req, context) {
   try {
     await connectDb();
 
-    const user = getUserFromReq(req);
-    if (!user || user.role !== "admin") {
-      return Response.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
+    const { id } = await context.params; // 🔥 FIX HERE
     const { status } = await req.json();
 
-    const order = await Order.findByIdAndUpdate(
-      params.id,
+    const updatedOrder = await order.findByIdAndUpdate(
+      id,
       { status },
-      { new: true }
+      { returnDocument: "after" } // ✅ updated syntax
     );
 
-    return Response.json(order);
+    return Response.json(updatedOrder);
 
   } catch (error) {
-    return Response.json({ message: "Error updating order" }, { status: 500 });
+    console.log(error);
+    return Response.json({ message: "Error updating" }, { status: 500 });
   }
 }

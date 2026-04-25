@@ -1,8 +1,8 @@
-import { connectDB } from "@/lib/db";
-import Cart from "@/models/Cart";
+
+import cart from "@/app/models/cart";
 import connectDb from "../../createConnection/route";
-import { getUserFromReq } from "@/app/lib/page";
-import order from "@/app/models/orders";
+import { getUserFromReq } from "@/app/lib/route";
+import order from "@/app/models/order";
 
 export async function POST(req) {
   try {
@@ -13,15 +13,15 @@ export async function POST(req) {
       return Response.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    // Get user's cart
-    const cart = await Cart.findOne({ userId: user.userId }).populate("items.productId");
+    // Get user's carts
+    const carts = await cart.findOne({ userId: user.userId }).populate("items.productId");
 
-    if (!cart || cart.items.length === 0) {
-      return Response.json({ message: "Cart is empty" }, { status: 400 });
+    if (!carts || carts.items.length === 0) {
+      return Response.json({ message: "cart is empty" }, { status: 400 });
     }
 
     // Build orders items
-    const items = cart.items.map((item) => ({
+    const items = carts.items.map((item) => ({
       productId: item.productId._id,
       title: item.productId.title,
       price: item.productId.price,
@@ -42,17 +42,16 @@ export async function POST(req) {
       status: "placed",
     });
 
-    // Clear cart after orders
-    await Cart.findOneAndUpdate(
+    // Clear carts after orders
+   
+await cart.findOneAndUpdate(
       { userId: user.userId },
       { items: [] }
     );
-
-    return Response.json({
-      message: "Order placed successfully",
-      orders,
-    });
-
+return Response.json({
+  message: "Order placed successfully",
+  order: orders, // ✅ rename this
+});
   } catch (error) {
     console.error(error);
     return Response.json({ message: "Error placing orders" }, { status: 500 });

@@ -1,18 +1,19 @@
-import { connectDB } from "@/lib/db";
-import Product from "@/models/Product";
-import { getUserFromReq } from "@/lib/getUser";
+
+import product from "@/app/models/product";
+
+import connectDb from "../../createConnection/route";
+import { getUserFromReq } from "@/app/lib/route";
 
 export async function POST(req) {
   try {
-    await connectDB();
+    await connectDb();
 
-    const user = getUserFromReq(req);
+    // const user = getUserFromReq(req);
 
-    // 🔐 Only admin allowed
-    if (!user || user.role !== "admin") {
-      return Response.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
+    // // 🔐 Only admin allowed
+    // if (!user || user.role !== "admin") {
+    //   return Response.json({ message: "Unauthorized" }, { status: 401 });
+    // }
     const { title, description, price, image, category, stock } = await req.json();
 
     // Basic validation
@@ -20,7 +21,7 @@ export async function POST(req) {
       return Response.json({ message: "Title and price required" }, { status: 400 });
     }
 
-    const product = await Product.create({
+    const products = await product.create({
       title,
       description,
       price,
@@ -31,7 +32,7 @@ export async function POST(req) {
 
     return Response.json({
       message: "Product created",
-      product,
+      products,
     });
 
   } catch (error) {

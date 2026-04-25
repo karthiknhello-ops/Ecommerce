@@ -1,6 +1,6 @@
 import cart from "@/app/models/cart";
 import connectDb from "../../createConnection/route";
-import { getUserFromReq } from "@/app/lib/page";
+import { getUserFromReq } from "@/app/lib/route";
 
 export async function POST(req) {
   try {
