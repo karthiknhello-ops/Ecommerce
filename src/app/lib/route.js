@@ -26,7 +26,7 @@ export function requireRole(req, allowedRoles = []) {
   const hasRole = user.roles.some(role =>
     allowedRoles.includes(role)
   );
-
+console.log("role",hasRole)
   if (!hasRole) {
     throw new Error("FORBIDDEN");
   }
